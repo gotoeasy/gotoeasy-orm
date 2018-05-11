@@ -9,12 +9,12 @@ import top.gotoeasy.framework.orm.exception.OrmException
 import top.gotoeasy.framework.orm.strategy.config.MyBook
 
 
-class OrmNammingStrategyTest  extends Specification {
+class OrmNamingStrategyTest  extends Specification {
 
     @Test
-    def void "正常测试"() {
+    def void "OrmNamingStrategy测试"() {
         expect:
-        OrmNammingStrategy strategy = new OrmNammingStrategy() {};
+        OrmNamingStrategy strategy = new OrmNamingStrategy() {};
 
         strategy.tableName("MyBook") == "my_book"
         strategy.tableName("top.gotoeasy.framework.orm.strategy.config.MyBook") == "my_book"
@@ -26,7 +26,7 @@ class OrmNammingStrategyTest  extends Specification {
         strategy.fieldName("abcd__efg") == "abcdEfg"
 
         when:
-        strategy.tableName(OrmNammingStrategyTest.class)
+        strategy.tableName(OrmNamingStrategyTest.class)
 
         then:
         thrown(OrmException)

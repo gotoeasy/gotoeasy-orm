@@ -11,7 +11,7 @@ import top.gotoeasy.framework.orm.exception.OrmException;
  * @since 2018/05
  * @author 青松
  */
-public interface OrmNammingStrategy {
+public interface OrmNamingStrategy {
 
     /**
      * 表物理名

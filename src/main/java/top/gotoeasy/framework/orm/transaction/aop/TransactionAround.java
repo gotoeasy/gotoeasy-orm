@@ -6,7 +6,11 @@ import top.gotoeasy.framework.aop.Enhance;
 import top.gotoeasy.framework.aop.SuperInvoker;
 import top.gotoeasy.framework.aop.annotation.Aop;
 import top.gotoeasy.framework.aop.annotation.Around;
+import top.gotoeasy.framework.core.log.Log;
+import top.gotoeasy.framework.core.log.LoggerFactory;
+import top.gotoeasy.framework.ioc.annotation.Autowired;
 import top.gotoeasy.framework.orm.annotation.Transaction;
+import top.gotoeasy.framework.orm.transaction.TransactionManager;
 
 /**
  * 数据库事务拦截处理
@@ -16,6 +20,11 @@ import top.gotoeasy.framework.orm.annotation.Transaction;
  */
 @Aop
 public class TransactionAround {
+
+    private static final Log   log = LoggerFactory.getLogger(TransactionAround.class);
+
+    @Autowired
+    private TransactionManager transactionManager;
 
     /**
      * 对@Transaction注解的方法进行拦截处理
@@ -29,6 +38,57 @@ public class TransactionAround {
     @Around(annotation = Transaction.class)
     public Object around(Enhance enhance, Method method, SuperInvoker superInvoker, Object ... args) {
 
-        return superInvoker.invoke(args);
+        Transaction transaction = method.getAnnotation(Transaction.class);
+        if ( !transactionManager.isNewTransaction(transaction) ) {
+            log.trace("不是新开事物，直接返回调用结果");
+            return superInvoker.invoke(args);
+        }
+
+        transactionManager.beginTransaction(transaction);
+        boolean isRollback = false;
+
+        try {
+            return superInvoker.invoke(args);
+        } catch (Exception ex) {
+            isRollback = isRollbackException(transaction, ex);
+            throw ex;
+        } finally {
+            if ( isRollback ) {
+                transactionManager.rollbackTransaction(transaction);
+            } else {
+                transactionManager.commitTransaction(transaction);
+            }
+        }
+
+    }
+
+    private boolean isRollbackException(Transaction transaction, Exception ex) {
+
+        if ( transaction.rollbackForException().length > 0 ) {
+            // 优先判断rollbackForException
+            if ( matchClass(transaction.rollbackForException(), ex) ) {
+                log.trace("有指定要回滚的异常类范围，当前异常在该范围内，将被回滚");
+                return true;
+            }
+        } else {
+            // 未指定rollbackForException时,判断noRollbackForException
+            if ( matchClass(transaction.noRollbackForException(), ex) ) {
+                log.trace("有指定不回滚的异常类范围，当前异常在该范围内，将被提交");
+                return false;
+            }
+        }
+
+        log.trace("判断属于需回滚异常，将被回滚");
+        return true;
+
+    }
+
+    private boolean matchClass(Class<?>[] classes, Exception ex) {
+        for ( Class<?> clas : classes ) {
+            if ( clas.isInstance(ex) ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

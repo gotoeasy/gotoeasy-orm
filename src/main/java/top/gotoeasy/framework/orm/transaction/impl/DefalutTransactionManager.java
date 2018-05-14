@@ -40,7 +40,7 @@ public class DefalutTransactionManager extends AbstractTransactionManager {
             throw new OrmException("当前无事务无法取得连接");
         }
 
-        return stack.peekLast(); // 从尾部取得最近的一个连接
+        return stack.peekFirst(); // 从头部取得最近的一个连接
     }
 
     /**
@@ -98,7 +98,7 @@ public class DefalutTransactionManager extends AbstractTransactionManager {
             throw new OrmException(e);
         }
 
-        localConnection.get().add(connection); // 添加元素到尾部
+        localConnection.get().push(connection);
         super.beginTransaction(transaction);
         log.info("■■■ 开始事务，只读={} ■■■", transaction.readOnly());
     }
@@ -122,7 +122,7 @@ public class DefalutTransactionManager extends AbstractTransactionManager {
             return;
         }
 
-        Connection connection = stack.pollLast(); // 弹出尾部元素
+        Connection connection = stack.pop();
         try {
             connection.commit();
         } catch (SQLException e) {
@@ -155,7 +155,7 @@ public class DefalutTransactionManager extends AbstractTransactionManager {
             return;
         }
 
-        Connection connection = stack.pollLast(); // 弹出尾部元素
+        Connection connection = stack.pop();
         try {
             connection.commit();
         } catch (SQLException e) {

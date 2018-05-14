@@ -59,7 +59,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
             localTransaction.set(stack);
         }
 
-        stack.add(transaction); // 添加元素到尾部
+        stack.push(transaction);
     }
 
     /**
@@ -72,7 +72,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
         if ( localTransaction.get() == null || localTransaction.get().isEmpty() ) {
             log.warn("当前无事务，提交无效");
         } else {
-            localTransaction.get().pollLast(); // 弹出尾部元素
+            localTransaction.get().pop();
         }
 
         if ( localTransaction.get().isEmpty() ) {
@@ -90,7 +90,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
         if ( localTransaction.get() == null || localTransaction.get().isEmpty() ) {
             log.warn("当前无事务，回滚无效");
         } else {
-            localTransaction.get().pollLast(); // 弹出尾部元素
+            localTransaction.get().pop();
         }
 
         if ( localTransaction.get().isEmpty() ) {

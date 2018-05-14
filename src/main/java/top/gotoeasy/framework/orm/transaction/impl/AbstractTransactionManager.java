@@ -5,6 +5,7 @@ import java.util.Deque;
 
 import top.gotoeasy.framework.core.log.Log;
 import top.gotoeasy.framework.core.log.LoggerFactory;
+import top.gotoeasy.framework.core.util.Assert;
 import top.gotoeasy.framework.orm.annotation.Transaction;
 import top.gotoeasy.framework.orm.transaction.TransactionManager;
 
@@ -28,10 +29,7 @@ public abstract class AbstractTransactionManager implements TransactionManager {
      */
     @Override
     public boolean isNewTransaction(Transaction transaction) {
-        if ( transaction == null ) {
-            log.trace("无事务注解，不需事务");
-            return false;
-        }
+        Assert.notNull(transaction, "参数transaction不能为null");
         log.trace("有事务注解[{}]", transaction);
 
         if ( localTransaction.get() == null || localTransaction.get().isEmpty() ) {
@@ -47,12 +45,11 @@ public abstract class AbstractTransactionManager implements TransactionManager {
     }
 
     /**
-     * 开始事务
+     * 添加事务
      * 
      * @param transaction 事务注解
      */
-    @Override
-    public void beginTransaction(Transaction transaction) {
+    protected void push(Transaction transaction) {
         Deque<Transaction> stack = localTransaction.get();
         if ( stack == null ) {
             stack = new ArrayDeque<>();
@@ -63,35 +60,12 @@ public abstract class AbstractTransactionManager implements TransactionManager {
     }
 
     /**
-     * 提交事务
+     * 弹出事务
      * 
      * @param transaction 事务注解
      */
-    @Override
-    public void commitTransaction(Transaction transaction) {
-        if ( localTransaction.get() == null || localTransaction.get().isEmpty() ) {
-            log.warn("当前无事务，提交无效");
-        } else {
-            localTransaction.get().pop();
-        }
-
-        if ( localTransaction.get().isEmpty() ) {
-            localTransaction.remove();
-        }
-    }
-
-    /**
-     * 回滚事务
-     * 
-     * @param transaction 事务注解
-     */
-    @Override
-    public void rollbackTransaction(Transaction transaction) {
-        if ( localTransaction.get() == null || localTransaction.get().isEmpty() ) {
-            log.warn("当前无事务，回滚无效");
-        } else {
-            localTransaction.get().pop();
-        }
+    public void pop(Transaction transaction) {
+        localTransaction.get().pop();
 
         if ( localTransaction.get().isEmpty() ) {
             localTransaction.remove();

@@ -53,7 +53,7 @@ public class TransactionAround {
             isRollback = isRollbackException(transaction, ex);
             throw ex;
         } finally {
-            if ( isRollback ) {
+            if ( transaction.readOnly() || isRollback ) {
                 transactionManager.rollbackTransaction(transaction);
             } else {
                 transactionManager.commitTransaction(transaction);

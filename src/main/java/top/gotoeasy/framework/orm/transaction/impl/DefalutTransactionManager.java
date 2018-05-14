@@ -99,7 +99,7 @@ public class DefalutTransactionManager extends AbstractTransactionManager {
         }
 
         localConnection.get().push(connection);
-        super.beginTransaction(transaction);
+        super.push(transaction);
         log.info("■■■ 开始事务，只读={} ■■■", transaction.readOnly());
     }
 
@@ -136,10 +136,11 @@ public class DefalutTransactionManager extends AbstractTransactionManager {
             }
 
             CmnOrm.close(connection);
+
+            super.pop(transaction);
+            log.info("■■■ 提交事务 ■■■");
         }
 
-        super.commitTransaction(transaction);
-        log.info("■■■ 提交事务 ■■■");
     }
 
     /**
@@ -169,10 +170,10 @@ public class DefalutTransactionManager extends AbstractTransactionManager {
             }
 
             CmnOrm.close(connection);
-        }
 
-        super.rollbackTransaction(transaction);
-        log.info("■■■ 回滚事务，只读={} ■■■", transaction.readOnly());
+            super.pop(transaction);
+            log.info("■■■ 回滚事务，只读={} ■■■", transaction.readOnly());
+        }
     }
 
 }

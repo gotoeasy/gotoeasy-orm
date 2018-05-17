@@ -35,7 +35,7 @@ public class TransactionAround {
      * @param args 被拦截方法的参数
      * @return 结果
      */
-    @Around(annotation = Transaction.class)
+    @Around(annotations = Transaction.class)
     public Object around(Enhance enhance, Method method, SuperInvoker superInvoker, Object ... args) {
 
         Transaction transaction = method.getAnnotation(Transaction.class);

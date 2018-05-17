@@ -17,7 +17,7 @@ public class TransactionAopBefore {
 
     private static final Log log = LoggerFactory.getLogger(TransactionAopBefore.class);
 
-    @Before(annotation = Transaction.class)
+    @Before(annotations = Transaction.class)
     public void before(BookEntity bookEntity) {
         log.info("前置拦截@Transaction方法，参数：{}", bookEntity);
     }

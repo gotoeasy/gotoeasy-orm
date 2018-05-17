@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>top.gotoeasy</groupId>
 	<artifactId>gotoeasy-orm</artifactId>
-	<version>1.0.0-snapshot</version>
+	<version>1.0.0</version>
 
 	<name>gotoeasy-orm</name>
 	<url>https://github.com/gotoeasy/gotoeasy-orm</url>
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>top.gotoeasy</groupId>
 			<artifactId>gotoeasy-ioc</artifactId>
-			<version>1.0.0-snapshot</version>
+			<version>1.0.0</version>
 		</dependency>
 
 

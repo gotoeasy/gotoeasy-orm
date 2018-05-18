@@ -28,6 +28,9 @@ public class TransactionAround {
 
     /**
      * 对@Transaction注解的方法进行拦截处理
+     * <p>
+     * 类和方法同时注解时，以方法注解为准
+     * </p>
      * 
      * @param enhance 增强对象
      * @param method 被拦截方法
@@ -35,10 +38,17 @@ public class TransactionAround {
      * @param args 被拦截方法的参数
      * @return 结果
      */
+    @Around(typeAnnotations = Transaction.class)
     @Around(annotations = Transaction.class)
     public Object around(Enhance enhance, Method method, SuperInvoker superInvoker, Object ... args) {
 
+        // 优先方法注解
         Transaction transaction = method.getAnnotation(Transaction.class);
+        if ( transaction == null ) {
+            // 方法注解没有时取类注解
+            transaction = method.getDeclaringClass().getAnnotation(Transaction.class);
+        }
+
         if ( !transactionManager.isNewTransaction(transaction) ) {
             log.trace("不是新开事物，直接返回调用结果");
             return superInvoker.invoke(args);

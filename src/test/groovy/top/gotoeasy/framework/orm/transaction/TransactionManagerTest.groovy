@@ -9,12 +9,13 @@ import top.gotoeasy.framework.core.config.DefaultConfig
 import top.gotoeasy.framework.ioc.util.CmnIoc
 import top.gotoeasy.framework.orm.transaction.config.BookEntity
 import top.gotoeasy.framework.orm.transaction.config.BookService
+import top.gotoeasy.framework.orm.transaction.config.StudentService
 
 
 class TransactionManagerTest  extends Specification {
 
     @Test
-    def void "事务测试"() {
+    def void "方法事务声明测试"() {
         expect:
         DefaultConfig.getInstance().set("ioc.scan", "top.gotoeasy.framework.orm.transaction");
 
@@ -41,5 +42,16 @@ class TransactionManagerTest  extends Specification {
         service.remove(bookEntity)
         then:
         thrown(Exception)
+    }
+
+    @Test
+    def void "类事务声明测试"() {
+        expect:
+        DefaultConfig.getInstance().set("ioc.scan", "top.gotoeasy.framework.orm.transaction");
+
+
+        StudentService service = CmnIoc.getBean(StudentService.class)
+
+        service.getBook() != null
     }
 }

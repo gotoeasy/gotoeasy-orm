@@ -164,7 +164,7 @@ public class DefaultDbManager extends AbstractDbManager {
             }
             return null;
         } catch (SQLException e) {
-            throw new OrmException("执行SQL查询出错", e);
+            throw new OrmException("执行SQL查询出错了", e);
         } finally {
             CmnOrm.close(preparedStatement, rs);
         }
@@ -210,9 +210,7 @@ public class DefaultDbManager extends AbstractDbManager {
         namingSql = CmnString.format(namingSql, strategy.tableName(entity.getClass()), where, orderby);
 
         List<T> list = new ArrayList<>();
-        super.query(namingSql, entity, mapRow -> {
-            list.add((T)CmnBean.mapToBean(mapRow, entity.getClass()));
-        });
+        super.query(namingSql, entity, mapRow -> list.add((T)CmnBean.mapToBean(mapRow, entity.getClass())));
 
         return list;
     }

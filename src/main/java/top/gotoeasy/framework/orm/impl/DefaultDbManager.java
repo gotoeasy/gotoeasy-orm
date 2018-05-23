@@ -9,13 +9,16 @@ import java.util.Map;
 
 import top.gotoeasy.framework.core.log.Log;
 import top.gotoeasy.framework.core.log.LoggerFactory;
+import top.gotoeasy.framework.core.util.CmnBean;
 import top.gotoeasy.framework.core.util.CmnString;
 import top.gotoeasy.framework.ioc.util.CmnIoc;
+import top.gotoeasy.framework.orm.annotation.Transaction;
 import top.gotoeasy.framework.orm.exception.OrmException;
 import top.gotoeasy.framework.orm.strategy.OrmNamingStrategy;
 import top.gotoeasy.framework.orm.transaction.TransactionManager;
 import top.gotoeasy.framework.orm.util.CmnOrm;
 
+@Transaction(readOnly = true)
 public class DefaultDbManager extends AbstractDbManager {
 
     private static final Log log = LoggerFactory.getLogger(DefaultDbManager.class);
@@ -157,7 +160,7 @@ public class DefaultDbManager extends AbstractDbManager {
             preparedStatement.setObject(1, id);
             rs = preparedStatement.executeQuery();
             if ( rs.next() ) {
-                return null; //TODO  return (T)CmnBean.mapToBean(readToMap(rs, getPropertyNames(rs)), entityClass, true);
+                return CmnBean.mapToBean(readToMap(rs, getPropertyNames(rs)), entityClass);
             }
             return null;
         } catch (SQLException e) {
@@ -208,7 +211,7 @@ public class DefaultDbManager extends AbstractDbManager {
 
         List<T> list = new ArrayList<>();
         super.query(namingSql, entity, mapRow -> {
-            //TODO   list.add((T)CmnBean.copyBean(mapRow, entity.getClass()));
+            list.add((T)CmnBean.mapToBean(mapRow, entity.getClass()));
         });
 
         return list;
@@ -280,7 +283,7 @@ public class DefaultDbManager extends AbstractDbManager {
             Map<String, Object> map;
             while ( rs.next() ) {
                 map = readToMap(rs, propertyNames);
-                // TODO  list.add(CmnBean.mapToBean(map, recordClass, true));
+                list.add(CmnBean.mapToBean(map, recordClass));
             }
         } catch (SQLException e) {
             throw new OrmException(e.getMessage(), e);
@@ -337,8 +340,7 @@ public class DefaultDbManager extends AbstractDbManager {
     @Override
     public <T> T findOne(String namingSql, Object condition, Class<T> recordClass) {
         Map<String, Object> map = findOne(namingSql, condition);
-        // return map == null ? null : CmnBean.copyBean(map, recordClass);
-        return null; //TODO 
+        return map == null ? null : CmnBean.mapToBean(map, recordClass);
     }
 
     /**

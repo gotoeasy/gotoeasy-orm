@@ -12,12 +12,32 @@ public class CarService {
     private DbManager dbManager;
 
     @Transaction
-    public int save(Car car) {
-        return dbManager.insert(car);
+    public int save(MyCar myCar) {
+        return dbManager.insertOrUpdate(myCar, true);
     }
 
-    public Car getCar(String id) {
-        return dbManager.findById(Car.class, id);
+    @Transaction
+    public int update(MyCar myCar) {
+        return dbManager.update(myCar);
+    }
+
+    @Transaction
+    public int update(MyCar myCar, boolean inclNull) {
+        return dbManager.update(myCar, inclNull);
+    }
+
+    @Transaction
+    public int delete(MyCar myCar) {
+        return dbManager.delete(myCar);
+    }
+
+    @Transaction
+    public int deleteById(Class<?> entityClass, Object ... ids) {
+        return dbManager.deleteById(entityClass, ids);
+    }
+
+    public MyCar getCar(String id) {
+        return dbManager.findById(MyCar.class, id);
     }
 
 }

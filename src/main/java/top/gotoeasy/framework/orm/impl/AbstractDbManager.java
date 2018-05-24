@@ -67,6 +67,7 @@ public abstract class AbstractDbManager implements DbManager {
                 reader.readRow(readToMap(rs, propertyNames));
             }
         } catch (SQLException e) {
+            log.error(e.getMessage(), e);
             throw new OrmException("执行命名参数SQL查询出错", e);
         } finally {
             CmnOrm.close(preparedStatement, rs);
@@ -92,6 +93,7 @@ public abstract class AbstractDbManager implements DbManager {
             }
             return preparedStatement.executeQuery();
         } catch (SQLException e) {
+            log.error(e.getMessage(), e);
             throw new OrmException("执行预编译SQL查询出错", e);
         }
     }
@@ -126,6 +128,7 @@ public abstract class AbstractDbManager implements DbManager {
 
             return 0;
         } catch (SQLException e) {
+            log.error(e.getMessage(), e);
             throw new OrmException("执行命名参数SQL查询出错", e);
         } finally {
             CmnOrm.close(preparedStatement, rs);
@@ -170,6 +173,7 @@ public abstract class AbstractDbManager implements DbManager {
             }
             return preparedStatement.executeUpdate();
         } catch (SQLException e) {
+            log.error(e.getMessage(), e);
             throw new OrmException(e.getMessage(), e);
         } finally {
             CmnOrm.close(preparedStatement);
@@ -289,24 +293,30 @@ public abstract class AbstractDbManager implements DbManager {
         String name;
         while ( it.hasNext() ) {
             name = it.next();
-            if ( !mapField.get(name).isAnnotationPresent(Id.class)  // 仅ID条件
-                    || !includeNullValue && CmnBean.getFieldValue(entity, name) == null ) {
+            if ( !includeNullValue && CmnBean.getFieldValue(entity, name) == null ) {
                 continue;
             }
 
-            // set
-            if ( columns.length() > 0 ) {
-                columns.append(",");
+            if ( mapField.get(name).isAnnotationPresent(Id.class) ) {
+                // where of id
+                if ( where.length() > 0 ) {
+                    where.append(" ").append("and ");
+                }
+                where.append(strategy.columnName(name)).append("=:").append(name);
+            } else {
+                // set
+                if ( columns.length() > 0 ) {
+                    columns.append(",");
+                }
+                columns.append(strategy.columnName(name)).append("=:").append(name);
             }
-            columns.append(strategy.columnName(name)).append("=:").append(name);
 
-            // where of id
-            if ( where.length() > 0 ) {
-                where.append(" ").append("and ");
-            }
-            where.append(strategy.columnName(name)).append("=:").append(name);
         }
 
+        if ( columns.length() == 0 ) {
+            // 没有字段需要更新
+            return null;
+        }
         return CmnString.format(sql, table, columns.toString(), where.toString());
     }
 

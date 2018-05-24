@@ -4,7 +4,7 @@ import top.gotoeasy.framework.orm.annotation.Entity;
 import top.gotoeasy.framework.orm.annotation.Id;
 
 @Entity
-public class Car {
+public class MyCar {
 
     @Id
     private String id;

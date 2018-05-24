@@ -50,6 +50,10 @@ public class DefaultDbManager extends AbstractDbManager {
     public <T> int update(T entity, boolean includeNullValue) {
         String namingSql = getUpdateSql(entity, includeNullValue);
         log.trace(namingSql);
+        if ( CmnString.isBlank(namingSql) ) {
+            log.trace("没有字段需要更新，直接返回");
+            return 0;
+        }
         return executeUpdate(namingSql, entity);
     }
 

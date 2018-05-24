@@ -7,11 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import javax.sql.DataSource;
-
 import top.gotoeasy.framework.core.log.Log;
 import top.gotoeasy.framework.core.log.LoggerFactory;
-import top.gotoeasy.framework.ioc.util.CmnIoc;
 import top.gotoeasy.framework.orm.annotation.Transaction;
 import top.gotoeasy.framework.orm.exception.OrmException;
 import top.gotoeasy.framework.orm.util.CmnOrm;
@@ -83,10 +80,9 @@ public class DefalutTransactionManager extends AbstractTransactionManager {
             localConnection.set(new ArrayDeque<>());
         }
 
-        DataSource ds = CmnIoc.getBean(DataSource.class);
         Connection connection = null;
         try {
-            connection = ds.getConnection();
+            connection = getDataSource().getConnection();
         } catch (SQLException e) {
             throw new OrmException("从DataSource取得Connection失败", e);
         }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ioc:beans xmlns:ioc="http://www.gotoeasy.top/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.gotoeasy.top/schema/beans gotoeasy-beans.xsd">
+
+
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="jdbcUrl" class="String" value="jdbc:h2:mem:test" />
+		<property name="username" class="String" value="test" />
+		<property name="password" class="String" value="test" />
+		<property name="driverClassName" class="String" value="org.h2.Driver" />
+		<property name="minimumIdle" class="int" value="1" />
+		<property name="maximumPoolSize" class="int" value="10" />
+	</bean>
+
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+		<constructor>
+			<arg ref="hikariConfig" />
+		</constructor>
+	</bean>
+
+
+	<bean id="dbManager" class="top.gotoeasy.framework.orm.impl.DefaultDbManager" />
+	
+	<bean id="transactionManager" class="top.gotoeasy.framework.orm.transaction.impl.DefalutTransactionManager" >
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</ioc:beans>

@@ -3,6 +3,8 @@ package top.gotoeasy.framework.orm.transaction.impl;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import javax.sql.DataSource;
+
 import top.gotoeasy.framework.core.log.Log;
 import top.gotoeasy.framework.core.log.LoggerFactory;
 import top.gotoeasy.framework.core.util.Assert;
@@ -20,6 +22,26 @@ public abstract class AbstractTransactionManager implements TransactionManager {
     private static final Log                log              = LoggerFactory.getLogger(AbstractTransactionManager.class);
 
     private ThreadLocal<Deque<Transaction>> localTransaction = new ThreadLocal<>();
+
+    private DataSource                      dataSource;
+
+    /**
+     * 取得DataSource
+     * 
+     * @return DataSource
+     */
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    /**
+     * 设定DataSource
+     * 
+     * @param dataSource DataSource
+     */
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     /**
      * 判断是否要开启新事务

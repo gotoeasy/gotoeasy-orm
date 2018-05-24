@@ -63,8 +63,8 @@ public class DefaultSqlDialect implements SqlDialect {
         } else if ( field.getType().equals(Date.class) ) {
             rs = "timestamp";
         } else {
-            log.error("未对应的字段类型{}", field);
-            throw new OrmException("TODO 没想到");
+            log.error("待对应的字段类型{}", field);
+            throw new OrmException("TODO 待对应的字段类型：" + field);
         }
 
         if ( field.isAnnotationPresent(Id.class) ) {

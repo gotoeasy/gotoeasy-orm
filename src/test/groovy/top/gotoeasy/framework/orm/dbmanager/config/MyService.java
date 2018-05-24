@@ -1,5 +1,7 @@
 package top.gotoeasy.framework.orm.dbmanager.config;
 
+import java.util.List;
+
 import top.gotoeasy.framework.ioc.annotation.Autowired;
 import top.gotoeasy.framework.ioc.annotation.Component;
 import top.gotoeasy.framework.orm.DbManager;
@@ -39,6 +41,11 @@ public class MyService {
     @Transaction
     public int deleteById(Class<?> entityClass, Object ... ids) {
         return dbManager.deleteById(entityClass, ids);
+    }
+
+    @Transaction
+    public int execute(String sql, List<Object> listParams) {
+        return dbManager.execute(sql, listParams);
     }
 
     public MyCar getCar(String id) {

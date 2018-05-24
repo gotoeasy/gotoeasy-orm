@@ -60,6 +60,7 @@ public class TransactionAround {
         try {
             return superInvoker.invoke(args);
         } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
             isRollback = isRollbackException(transaction, ex);
             throw ex;
         } finally {

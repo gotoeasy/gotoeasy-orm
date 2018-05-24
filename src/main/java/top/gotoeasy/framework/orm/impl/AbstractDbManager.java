@@ -121,12 +121,15 @@ public abstract class AbstractDbManager implements DbManager {
             }
             rs = preparedStatement.executeQuery();
 
+            int cnt = 0;
             if ( rs.next() ) {
                 BigDecimal bigDecimal = rs.getBigDecimal(1);
-                return bigDecimal == null ? 0 : bigDecimal.intValue();
+                if ( bigDecimal != null ) {
+                    cnt = bigDecimal.intValue();
+                }
             }
 
-            return 0;
+            return cnt;
         } catch (SQLException e) {
             log.error(e.getMessage(), e);
             throw new OrmException("执行命名参数SQL查询出错", e);
@@ -190,7 +193,7 @@ public abstract class AbstractDbManager implements DbManager {
      */
     @Override
     public <T> int deleteById(Class<T> entityClass, Object ... ids) {
-        if ( ids == null || ids.length == 0 ) {
+        if ( ids.length == 0 ) {
             throw new OrmException("必须设定主键参数进行操作");
         }
 
@@ -338,13 +341,6 @@ public abstract class AbstractDbManager implements DbManager {
         }
 
         return CmnString.format(sql, table, strategy.columnName(columns.toString()), values.toString());
-    }
-
-    protected <T> String getCountByIdSql(Class<T> entityClass) {
-        OrmNamingStrategy strategy = CmnIoc.getBean(OrmNamingStrategy.class);
-        String table = strategy.tableName(entityClass);
-        String sql = "select count(*) from {table} where {where};";
-        return CmnString.format(sql, table, getIdConditionSql(entityClass));
     }
 
     protected <T> String getIdConditionSql(Class<T> entityClass) {

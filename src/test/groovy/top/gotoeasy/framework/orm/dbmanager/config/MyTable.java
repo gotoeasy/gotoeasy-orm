@@ -4,18 +4,17 @@ import top.gotoeasy.framework.orm.annotation.Entity;
 import top.gotoeasy.framework.orm.annotation.Id;
 
 @Entity
-public class MyCar {
+public class MyTable {
 
     @Id
-    private String id;
+    private int    id;
     private String name;
-    private String color;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -25,14 +24,6 @@ public class MyCar {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
 }

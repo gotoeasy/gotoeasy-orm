@@ -56,7 +56,7 @@ public class DefaultSqlDialect implements SqlDialect {
             } else {
                 rs = "character varying(255)";
             }
-        } else if ( field.getType().equals(Integer.class) || field.getType().equals(Long.class) ) {
+        } else if ( field.getType().equals(int.class) || field.getType().equals(Integer.class) || field.getType().equals(Long.class) ) {
             rs = "integer";
         } else if ( field.getType().equals(BigDecimal.class) || field.getType().equals(Double.class) ) {
             rs = "numeric(20,2)";

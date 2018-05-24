@@ -6,7 +6,7 @@ import top.gotoeasy.framework.orm.DbManager;
 import top.gotoeasy.framework.orm.annotation.Transaction;
 
 @Component
-public class CarService {
+public class MyService {
 
     @Autowired
     private DbManager dbManager;
@@ -19,6 +19,11 @@ public class CarService {
     @Transaction
     public int update(MyCar myCar) {
         return dbManager.update(myCar);
+    }
+
+    @Transaction
+    public int save(MyBus myBus) {
+        return dbManager.insertOrUpdate(myBus, true);
     }
 
     @Transaction

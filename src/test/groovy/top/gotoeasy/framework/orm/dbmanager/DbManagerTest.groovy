@@ -127,7 +127,12 @@ class DbManagerTest  extends Specification {
         thrown(OrmException)
 
         when:
-        dbManager.findById(MyTable.class, "xxxxx")
+        myService.execute("select * from my_table where id=?", Arrays.asList("xxxxxxxxxxxxx"))
+        then:
+        thrown(OrmException)
+
+        when:
+        dbManager.deleteById(MyTable.class, "xxxxx")
         then:
         thrown(OrmException)
 
@@ -153,6 +158,11 @@ class DbManagerTest  extends Specification {
 
         when:
         dbManager.findOne("select count(*) from my_table where id=:id", entity)
+        then:
+        thrown(OrmException)
+
+        when:
+        dbManager.findById(MyTable.class, entity)
         then:
         thrown(OrmException)
 

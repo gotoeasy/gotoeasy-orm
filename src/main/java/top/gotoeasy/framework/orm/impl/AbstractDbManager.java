@@ -66,35 +66,11 @@ public abstract class AbstractDbManager implements DbManager {
             while ( rs.next() ) {
                 reader.readRow(readToMap(rs, propertyNames));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw new OrmException("执行命名参数SQL查询出错", e);
         } finally {
             CmnOrm.close(preparedStatement, rs);
-        }
-    }
-
-    /**
-     * 执行命名参数SQL查询
-     * 
-     * @param namingSql 命名参数SQL
-     * @param paramObject 参数对象
-     * @return 查询结果集游标
-     */
-    protected ResultSet executeQuery(PreparedStatement preparedStatement, String namingSql, Object paramObject) {
-        String sql = toPrepareSql(namingSql); // 命名参数替换为问号
-        List<Object> listParams = getSqlParameters(namingSql, paramObject);
-        log.debug(sql);
-        log.debug("参数{}", listParams);
-
-        try {
-            for ( int i = 0; i < listParams.size(); i++ ) {
-                preparedStatement.setObject(i + 1, listParams.get(i));
-            }
-            return preparedStatement.executeQuery();
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e);
-            throw new OrmException("执行预编译SQL查询出错", e);
         }
     }
 
@@ -166,9 +142,8 @@ public abstract class AbstractDbManager implements DbManager {
         log.debug("参数{}", listParams);
 
         TransactionManager transactionManager = CmnIoc.getBean(TransactionManager.class);
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement = transactionManager.prepareStatement(sql);
         try {
-            preparedStatement = transactionManager.prepareStatement(sql);
             if ( listParams != null ) {
                 for ( int i = 0; i < listParams.size(); i++ ) {
                     preparedStatement.setObject(i + 1, listParams.get(i));

@@ -38,8 +38,8 @@ public class TransactionAround {
      * @param args 被拦截方法的参数
      * @return 结果
      */
-    @Around(typeAnnotations = Transaction.class)
-    @Around(annotations = Transaction.class)
+    @Around(typeAnnotations = Transaction.class, order = Integer.MIN_VALUE)
+    @Around(annotations = Transaction.class, order = Integer.MIN_VALUE)
     public Object around(Enhance enhance, Method method, SuperInvoker superInvoker, Object ... args) {
 
         // 优先方法注解

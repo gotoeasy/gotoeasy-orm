@@ -19,7 +19,7 @@ import top.gotoeasy.framework.orm.util.CmnOrm
 class DbManagerTest  extends Specification {
 
     def setup() {
-        DefaultConfig.getInstance().set("ioc.scan", "top.gotoeasy.framework.orm.dbmanager,top.gotoeasy.framework.orm.transaction.aop");
+        DefaultConfig.getInstance().set("ioc.scan", "top.gotoeasy.framework.orm.dbmanager,top.gotoeasy.framework.orm.transaction.aop,,");
         DefaultConfig.getInstance().set("ioc.config.file", "h2.xml");
         // DefaultConfig.getInstance().set("log.level.trace", "true");
         DefaultConfig.getInstance().set("ioc.lazyload", "false");
@@ -166,5 +166,9 @@ class DbManagerTest  extends Specification {
         then:
         thrown(OrmException)
 
+    }
+
+    @Test
+    def void "CmnOrm表创建"() {
     }
 }

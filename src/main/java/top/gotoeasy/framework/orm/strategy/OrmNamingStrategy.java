@@ -1,10 +1,5 @@
 package top.gotoeasy.framework.orm.strategy;
 
-import top.gotoeasy.framework.core.util.CmnClass;
-import top.gotoeasy.framework.core.util.CmnString;
-import top.gotoeasy.framework.orm.annotation.Entity;
-import top.gotoeasy.framework.orm.exception.OrmException;
-
 /**
  * ROM模块命名策略
  * 
@@ -24,28 +19,7 @@ public interface OrmNamingStrategy {
      * @param className 类名
      * @return 表物理名
      */
-    public default String tableName(String className) {
-        if ( className.contains(".") ) {
-            return tableName(CmnClass.loadClass(className));
-        }
-
-        char[] chars = CmnString.uncapitalize(className).toCharArray();
-        StringBuilder buf = new StringBuilder();
-        boolean isPreLowerCase = false;
-        for ( int i = 0; i < chars.length; i++ ) {
-            if ( Character.isUpperCase(chars[i]) ) {
-                if ( isPreLowerCase ) {
-                    buf.append('_');
-                }
-                buf.append(String.valueOf(chars[i]).toLowerCase());
-                isPreLowerCase = false;
-            } else {
-                buf.append(chars[i]);
-                isPreLowerCase = true;
-            }
-        }
-        return buf.toString();
-    }
+    public String tableName(String className);
 
     /**
      * 表物理名
@@ -57,18 +31,7 @@ public interface OrmNamingStrategy {
      * @param clas 类
      * @return 表物理名
      */
-    public default String tableName(Class<?> clas) {
-        if ( !clas.isAnnotationPresent(Entity.class) ) {
-            throw new OrmException("无@Entity注解的类不能映射表名：" + clas.getCanonicalName());
-        }
-
-        Entity anno = clas.getAnnotation(Entity.class);
-        if ( CmnString.isNotBlank(anno.value()) ) {
-            return anno.value();
-        }
-
-        return tableName(clas.getSimpleName());
-    }
+    public String tableName(Class<?> clas);
 
     /**
      * 字段物理名
@@ -76,9 +39,7 @@ public interface OrmNamingStrategy {
      * @param fieldName Java字段名
      * @return 字段物理名
      */
-    public default String columnName(String fieldName) {
-        return tableName(fieldName);
-    }
+    public String columnName(String fieldName);
 
     /**
      * 按字段物理名取得Java字段名
@@ -86,24 +47,6 @@ public interface OrmNamingStrategy {
      * @param columnName 字段物理名
      * @return Java字段名
      */
-    public default String fieldName(String columnName) {
-        char[] chars = CmnString.uncapitalize(columnName).toCharArray();
-        StringBuilder buf = new StringBuilder();
-        char chr = ' ';
-        for ( int i = 0; i < chars.length; i++ ) {
-
-            if ( chr == '_' ) {
-                if ( chars[i] != '_' ) {
-                    buf.append(String.valueOf(chars[i]).toUpperCase());
-                }
-            } else {
-                if ( chars[i] != '_' ) {
-                    buf.append(chars[i]);
-                }
-            }
-            chr = chars[i];
-        }
-        return buf.toString();
-    }
+    public String fieldName(String columnName);
 
 }

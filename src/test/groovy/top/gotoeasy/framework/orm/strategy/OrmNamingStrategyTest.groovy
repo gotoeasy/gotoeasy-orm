@@ -5,6 +5,7 @@ import static org.junit.Assert.*
 import org.junit.Test
 
 import spock.lang.Specification
+import top.gotoeasy.framework.core.util.CmnSpi
 import top.gotoeasy.framework.orm.exception.OrmException
 import top.gotoeasy.framework.orm.strategy.config.MyBook
 
@@ -14,7 +15,7 @@ class OrmNamingStrategyTest  extends Specification {
     @Test
     def void "OrmNamingStrategy测试"() {
         expect:
-        OrmNamingStrategy strategy = new OrmNamingStrategy() {};
+        OrmNamingStrategy strategy = CmnSpi.loadSpiInstance(OrmNamingStrategy.class);
 
         strategy.tableName("MyBook") == "my_book"
         strategy.tableName("top.gotoeasy.framework.orm.strategy.config.MyBook") == "my_book"

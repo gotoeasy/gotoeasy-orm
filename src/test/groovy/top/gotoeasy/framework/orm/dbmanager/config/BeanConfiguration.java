@@ -11,11 +11,11 @@ public class BeanConfiguration {
 
     @Bean
     public OrmNamingStrategy ormNamingStrategy() {
-        return CmnSpi.loadSpiInstance(OrmNamingStrategy.class);
+        return CmnSpi.loadInstance(OrmNamingStrategy.class);
     }
 
     @Bean
     public SqlDialect sqlDialect() {
-        return CmnSpi.loadSpiInstance(SqlDialect.class);
+        return CmnSpi.loadInstance(SqlDialect.class);
     }
 }

@@ -1,2 +1,2 @@
-# 默认事务管理器（若要替换，添加更小键名的配置即可）
+# 默认事务管理器（若要替换，添加更大键名的配置即可）
 default=top.gotoeasy.framework.orm.transaction.impl.DefalutTransactionManager
